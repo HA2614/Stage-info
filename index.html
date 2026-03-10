@@ -6,300 +6,138 @@
 <title>Stagemarkt Dashboard</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap');
-
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0a0a0f;
-  --surface:#111118;
-  --card:#16161f;
-  --card2:#1c1c28;
-  --border:#252535;
-  --border2:#333348;
-  --text:#f0f0f8;
-  --muted:#7070a0;
-  --muted2:#454565;
-  --accent:#6c5ce7;
-  --accent2:#a29bfe;
-  --green:#00d68f;
-  --green-bg:rgba(0,214,143,.1);
-  --amber:#fdcb6e;
-  --amber-bg:rgba(253,203,110,.1);
-  --red:#ff7675;
-  --blue:#74b9ff;
-  --pink:#fd79a8;
-  --radius:8px;
-  --radius-lg:14px;
+  --bg:#0a0a0f;--surface:#111118;--card:#16161f;--card2:#1c1c28;
+  --border:#252535;--border2:#333348;
+  --text:#f0f0f8;--muted:#7070a0;--muted2:#454565;
+  --accent:#6c5ce7;--accent2:#a29bfe;
+  --green:#00d68f;--green-bg:rgba(0,214,143,.1);
+  --amber:#fdcb6e;--amber-bg:rgba(253,203,110,.1);
+  --red:#ff7675;--blue:#74b9ff;--pink:#fd79a8;
+  --radius:8px;--radius-lg:14px;
 }
-
 html{scroll-behavior:smooth}
 body{font-family:'Syne',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
-
-/* ── Noise overlay ── */
-body::before{
-  content:'';position:fixed;inset:0;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-  pointer-events:none;z-index:0;opacity:.4;
-}
-
-/* ── Header ── */
-.header{
-  position:sticky;top:0;z-index:100;
-  background:rgba(10,10,15,.85);
-  backdrop-filter:blur(20px);
-  border-bottom:1px solid var(--border);
-  padding:0 32px;
-  display:flex;align-items:center;gap:20px;height:60px;
-}
-.logo{font-size:16px;font-weight:800;letter-spacing:-.02em;color:var(--text)}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.4}
+.header{position:sticky;top:0;z-index:100;background:rgba(10,10,15,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;gap:16px;height:60px}
+.logo{font-size:16px;font-weight:800;letter-spacing:-.02em}
 .logo span{color:var(--accent2)}
-.header-badge{
-  background:var(--accent);color:#fff;
-  font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
-  padding:3px 8px;border-radius:20px;
-}
-.header-stats{margin-left:auto;display:flex;gap:20px;align-items:center}
+.header-badge{background:var(--accent);color:#fff;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:20px}
+.header-right{margin-left:auto;display:flex;gap:20px;align-items:center}
 .hstat{text-align:right}
-.hstat-n{font-size:14px;font-weight:700;font-family:'DM Mono',monospace;color:var(--accent2)}
+.hstat-n{font-size:14px;font-weight:700;font-family:'DM Mono',monospace;color:var(--accent2);line-height:1}
 .hstat-l{font-size:10px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase}
-
-/* ── Drop zone ── */
-.dropzone{
-  margin:32px auto;max-width:1400px;padding:0 32px;
-}
-.drop-area{
-  border:2px dashed var(--border2);border-radius:var(--radius-lg);
-  padding:48px;text-align:center;cursor:pointer;
-  transition:all .2s;background:var(--surface);
-  position:relative;overflow:hidden;
-}
-.drop-area::before{
-  content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse at 50% 0%, rgba(108,92,231,.08), transparent 70%);
-  pointer-events:none;
-}
-.drop-area:hover,.drop-area.drag-over{border-color:var(--accent);background:rgba(108,92,231,.06)}
-.drop-icon{font-size:40px;margin-bottom:12px;display:block}
-.drop-title{font-size:18px;font-weight:700;margin-bottom:6px}
-.drop-sub{font-size:13px;color:var(--muted)}
-.drop-sub b{color:var(--accent2)}
-.drop-input{position:absolute;inset:0;opacity:0;cursor:pointer}
-.folder-btn{
-  display:inline-flex;align-items:center;gap:8px;margin-top:16px;
-  background:var(--accent);color:#fff;border:none;
-  padding:10px 20px;border-radius:var(--radius);
-  font-family:'Syne',sans-serif;font-size:13px;font-weight:600;
-  cursor:pointer;transition:all .15s;
-}
-.folder-btn:hover{background:#7d6ef0;transform:translateY(-1px)}
-
-/* ── Main layout ── */
+.refresh-btn{background:var(--card);border:1px solid var(--border);color:var(--muted);padding:6px 12px;border-radius:var(--radius);font-family:'Syne',sans-serif;font-size:11px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:6px}
+.refresh-btn:hover{border-color:var(--border2);color:var(--text)}
+.refresh-btn svg{transition:transform .6s}
+.refresh-btn.spinning svg{animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:16px;color:var(--muted)}
+.loading-ring{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+.loading-title{font-size:14px;font-weight:600;color:var(--text)}
+.loading-sub{font-size:12px}
+.loading-files{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent2);margin-top:4px;max-width:340px;text-align:center;line-height:1.7}
+.error-state{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:12px;text-align:center;padding:32px}
+.error-icon{font-size:40px}
+.error-title{font-size:16px;font-weight:700;color:var(--red)}
+.error-msg{font-size:12px;color:var(--muted);max-width:400px;line-height:1.7}
+.error-code{font-family:'DM Mono',monospace;font-size:11px;background:var(--card);border:1px solid var(--border);padding:8px 16px;border-radius:var(--radius);color:var(--muted)}
+.retry-btn{background:var(--accent);color:#fff;border:none;padding:10px 24px;border-radius:var(--radius);font-family:'Syne',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
+.retry-btn:hover{background:#7d6ef0}
 .main{max-width:1400px;margin:0 auto;padding:0 32px 48px;display:none}
 .main.visible{display:block}
-
-/* ── Control bar ── */
-.controlbar{
-  display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;
-  padding:20px 0 16px;border-bottom:1px solid var(--border);margin-bottom:20px;
-}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;padding:20px 0 16px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;transition:transform .2s;position:relative;overflow:hidden}
+.stat-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--accent);opacity:.25}
+.stat-card:hover{transform:translateY(-2px)}
+.stat-n{font-size:22px;font-weight:800;font-family:'DM Mono',monospace;letter-spacing:-.03em;line-height:1}
+.stat-n.g{color:var(--green)}.stat-n.a{color:var(--accent2)}.stat-n.y{color:var(--amber)}.stat-n.b{color:var(--blue)}
+.stat-l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-top:4px}
+.controlbar{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap;padding:0 0 14px;border-bottom:1px solid var(--border);margin-bottom:14px}
 .search-wrap{flex:1;min-width:200px;position:relative}
-.search-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
-.search-input{
-  width:100%;background:var(--card);border:1px solid var(--border);
-  border-radius:var(--radius);color:var(--text);
-  font-family:'Syne',sans-serif;font-size:13px;padding:9px 12px 9px 36px;
-  outline:none;transition:border-color .15s;
-}
+.search-wrap svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+.search-input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:'Syne',sans-serif;font-size:13px;padding:8px 12px 8px 34px;outline:none;transition:border-color .15s}
 .search-input:focus{border-color:var(--accent)}
 .search-input::placeholder{color:var(--muted2)}
-
-.filter-group{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
-.filter-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;align-self:center;margin-right:2px}
-.filter-chip{
-  background:var(--card);border:1px solid var(--border);
-  color:var(--muted);padding:6px 12px;border-radius:20px;
-  font-family:'Syne',sans-serif;font-size:12px;font-weight:500;
-  cursor:pointer;transition:all .15s;white-space:nowrap;
-}
-.filter-chip:hover{border-color:var(--border2);color:var(--text)}
-.filter-chip.active{background:var(--accent);border-color:var(--accent);color:#fff}
-.filter-chip.bol.active{background:var(--blue);border-color:var(--blue);color:#000}
-.filter-chip.bbl.active{background:var(--amber);border-color:var(--amber);color:#000}
-
-.sort-select{
-  background:var(--card);border:1px solid var(--border);
-  color:var(--text);padding:8px 12px;border-radius:var(--radius);
-  font-family:'Syne',sans-serif;font-size:12px;outline:none;cursor:pointer;
-}
-.sort-select:focus{border-color:var(--accent)}
-
-/* ── Active filters bar ── */
-.active-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;min-height:0}
-.af-tag{
-  display:inline-flex;align-items:center;gap:6px;
-  background:rgba(108,92,231,.15);border:1px solid rgba(108,92,231,.3);
-  color:var(--accent2);padding:4px 10px;border-radius:20px;font-size:11px;
-}
-.af-tag button{background:none;border:none;color:var(--accent2);cursor:pointer;padding:0;line-height:1;font-size:13px}
-
-/* ── Section headers ── */
-.section{margin-bottom:32px}
-.section-header{
-  display:flex;align-items:center;gap:12px;
-  padding:12px 0 10px;border-bottom:1px solid var(--border);margin-bottom:16px;
-}
-.section-title{font-size:15px;font-weight:700;letter-spacing:-.01em}
-.section-badge{
-  font-family:'DM Mono',monospace;font-size:11px;
-  background:var(--card2);border:1px solid var(--border);
-  color:var(--muted);padding:2px 8px;border-radius:20px;
-}
-.section-level{
-  font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
-  padding:3px 8px;border-radius:20px;
-}
-.level-4{background:rgba(108,92,231,.2);color:var(--accent2)}
-.level-3{background:rgba(116,185,255,.2);color:var(--blue)}
-.level-2{background:rgba(253,203,110,.2);color:var(--amber)}
-.level-1{background:rgba(255,118,117,.2);color:var(--red)}
-.level-hbo{background:rgba(0,214,143,.2);color:var(--green)}
-.section-toggle{
-  margin-left:auto;background:none;border:1px solid var(--border);
-  color:var(--muted);padding:4px 10px;border-radius:var(--radius);
-  font-family:'Syne',sans-serif;font-size:11px;cursor:pointer;transition:all .15s;
-}
-.section-toggle:hover{border-color:var(--border2);color:var(--text)}
-
-/* ── Cards grid ── */
-.cards-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
-  gap:12px;
-}
-
-/* ── Vacancy card ── */
-.card{
-  background:var(--card);border:1px solid var(--border);
-  border-radius:var(--radius-lg);padding:16px;
-  transition:all .2s;cursor:default;
-  position:relative;overflow:hidden;
-  animation:cardIn .3s ease both;
-}
-@keyframes cardIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,var(--accent),var(--pink));
-  opacity:0;transition:opacity .2s;
-}
-.card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.4)}
-.card:hover::before{opacity:1}
-
-.card-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px}
-.card-avatar{
-  width:36px;height:36px;border-radius:8px;flex-shrink:0;
-  background:linear-gradient(135deg,var(--accent),var(--pink));
-  display:flex;align-items:center;justify-content:center;
-  font-size:14px;font-weight:800;color:#fff;text-transform:uppercase;
-}
-.card-head{flex:1;min-width:0}
-.card-company{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.card-title{font-size:11.5px;color:var(--muted);margin-top:2px;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-.card-chips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
-.chip{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:20px;font-size:10.5px;font-weight:600;white-space:nowrap}
-.chip-verg{background:var(--green-bg);color:var(--green);border:1px solid rgba(0,214,143,.2)}
-.chip-bol{background:rgba(116,185,255,.12);color:var(--blue);border:1px solid rgba(116,185,255,.2)}
-.chip-bbl{background:var(--amber-bg);color:var(--amber);border:1px solid rgba(253,203,110,.2)}
-.chip-level{background:rgba(108,92,231,.12);color:var(--accent2);border:1px solid rgba(108,92,231,.2)}
-.chip-nil{background:var(--card2);color:var(--muted2);border:1px solid var(--border)}
-
-.card-meta{display:flex;flex-direction:column;gap:5px;font-size:11.5px}
-.card-row{display:flex;gap:8px;align-items:baseline}
-.card-row-label{color:var(--muted2);min-width:52px;font-size:10px;text-transform:uppercase;letter-spacing:.05em;flex-shrink:0}
-.card-row-val{color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
-.card-row-val a{color:var(--accent2);text-decoration:none}
-.card-row-val a:hover{text-decoration:underline}
-.card-row-val.nil{color:var(--muted2)}
-
-.card-footer{
-  display:flex;gap:8px;margin-top:12px;padding-top:10px;
-  border-top:1px solid var(--border);align-items:center;
-}
-.card-actions{display:flex;gap:5px;margin-left:auto}
-.btn-card{
-  background:var(--card2);border:1px solid var(--border);
-  color:var(--text);padding:5px 10px;border-radius:6px;
-  font-family:'Syne',sans-serif;font-size:11px;font-weight:500;
-  cursor:pointer;transition:all .15s;text-decoration:none;display:inline-block;
-}
-.btn-card:hover{background:var(--border);text-decoration:none}
-.btn-card.primary{background:var(--accent);border-color:var(--accent);color:#fff}
-.btn-card.primary:hover{background:#7d6ef0}
-
-/* Status checkboxes on card */
-.card-status{display:flex;gap:10px}
-.chk-label{display:flex;align-items:center;gap:4px;cursor:pointer;font-size:10.5px;color:var(--muted);user-select:none}
-.chk-label input{accent-color:var(--green);width:11px;height:11px}
-.chk-label:has(input:checked){color:var(--green)}
-.chk-label.chk-aangenomen:has(input:checked){color:var(--amber)}
-
-/* ── Empty state ── */
-.empty{text-align:center;padding:60px 20px;color:var(--muted)}
-.empty-icon{font-size:40px;margin-bottom:12px}
-.empty-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px}
-
-/* ── Stats overview ── */
-.stats-row{
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
-  gap:10px;margin-bottom:24px;
-}
-.stat-card{
-  background:var(--card);border:1px solid var(--border);
-  border-radius:var(--radius);padding:14px 16px;
-  transition:transform .2s;
-}
-.stat-card:hover{transform:translateY(-2px)}
-.stat-n{font-size:24px;font-weight:800;font-family:'DM Mono',monospace;letter-spacing:-.03em}
-.stat-n.g{color:var(--green)}
-.stat-n.a{color:var(--accent2)}
-.stat-n.y{color:var(--amber)}
-.stat-l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-top:3px}
-
-/* ── Scrollbar ── */
-::-webkit-scrollbar{width:5px;height:5px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-
-/* ── View toggle ── */
-.view-toggle{display:flex;gap:4px;border:1px solid var(--border);border-radius:var(--radius);padding:2px}
-.view-btn{background:none;border:none;color:var(--muted);padding:5px 8px;border-radius:5px;cursor:pointer;transition:all .15s}
+.filter-group{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.filter-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;white-space:nowrap}
+.chip-btn{background:var(--card);border:1px solid var(--border);color:var(--muted);padding:6px 11px;border-radius:20px;font-family:'Syne',sans-serif;font-size:11.5px;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap}
+.chip-btn:hover{border-color:var(--border2);color:var(--text)}
+.chip-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.chip-btn.bol.active{background:var(--blue);border-color:var(--blue);color:#000}
+.chip-btn.bbl.active{background:var(--amber);border-color:var(--amber);color:#000}
+.chip-btn.grn.active{background:var(--green);border-color:var(--green);color:#000}
+.sort-sel{background:var(--card);border:1px solid var(--border);color:var(--text);padding:7px 10px;border-radius:var(--radius);font-family:'Syne',sans-serif;font-size:12px;outline:none;cursor:pointer}
+.sort-sel:focus{border-color:var(--accent)}
+.view-toggle{display:flex;gap:3px;border:1px solid var(--border);border-radius:var(--radius);padding:2px;background:var(--surface)}
+.view-btn{background:none;border:none;color:var(--muted);padding:5px 8px;border-radius:5px;cursor:pointer;transition:all .15s;display:flex;align-items:center}
 .view-btn.active{background:var(--card2);color:var(--text)}
-
-/* ── Table view ── */
-.table-wrap{overflow-x:auto}
+.active-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.af-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(108,92,231,.12);border:1px solid rgba(108,92,231,.25);color:var(--accent2);padding:3px 10px;border-radius:20px;font-size:11px}
+.af-tag button{background:none;border:none;color:var(--accent2);cursor:pointer;padding:0;font-size:14px;line-height:1;margin-left:2px}
+.section{margin-bottom:28px}
+.section-header{display:flex;align-items:center;gap:10px;padding:10px 0 8px;border-bottom:1px solid var(--border);margin-bottom:14px}
+.section-title{font-size:14px;font-weight:700;letter-spacing:-.01em}
+.section-badge{font-family:'DM Mono',monospace;font-size:11px;background:var(--card2);border:1px solid var(--border);color:var(--muted);padding:2px 8px;border-radius:20px}
+.level-pill{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:20px}
+.l4{background:rgba(108,92,231,.2);color:var(--accent2)}
+.l3{background:rgba(116,185,255,.2);color:var(--blue)}
+.l2{background:rgba(253,203,110,.2);color:var(--amber)}
+.l1{background:rgba(255,118,117,.2);color:var(--red)}
+.l5{background:rgba(0,214,143,.2);color:var(--green)}
+.l0{background:var(--card2);color:var(--muted)}
+.sec-toggle{margin-left:auto;background:none;border:1px solid var(--border);color:var(--muted);padding:3px 10px;border-radius:var(--radius);font-family:'Syne',sans-serif;font-size:11px;cursor:pointer;transition:all .15s}
+.sec-toggle:hover{color:var(--text);border-color:var(--border2)}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:15px;transition:all .2s;position:relative;overflow:hidden;animation:cardIn .25s ease both}
+@keyframes cardIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--pink));opacity:0;transition:opacity .2s}
+.card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.card:hover::before{opacity:1}
+.card-top{display:flex;gap:10px;margin-bottom:10px}
+.card-av{width:34px;height:34px;border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff}
+.card-head{flex:1;min-width:0}
+.card-co{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-sub{font-size:11px;color:var(--muted);margin-top:2px;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.4}
+.card-chips{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:9px}
+.chip{display:inline-flex;align-items:center;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:600;white-space:nowrap}
+.cv{background:var(--green-bg);color:var(--green);border:1px solid rgba(0,214,143,.2)}
+.cbol{background:rgba(116,185,255,.12);color:var(--blue);border:1px solid rgba(116,185,255,.2)}
+.cbbl{background:var(--amber-bg);color:var(--amber);border:1px solid rgba(253,203,110,.2)}
+.clvl{background:rgba(108,92,231,.12);color:var(--accent2);border:1px solid rgba(108,92,231,.2)}
+.cnil{background:var(--card2);color:var(--muted2);border:1px solid var(--border)}
+.card-meta{display:flex;flex-direction:column;gap:4px}
+.crow{display:flex;gap:8px;align-items:baseline;font-size:11.5px}
+.rl{color:var(--muted2);font-size:10px;text-transform:uppercase;letter-spacing:.05em;min-width:48px;flex-shrink:0}
+.rv{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.rv a{color:var(--accent2);text-decoration:none}
+.rv a:hover{text-decoration:underline}
+.rv-nil{color:var(--muted2)}
+.card-footer{display:flex;align-items:center;gap:8px;margin-top:10px;padding-top:9px;border-top:1px solid var(--border)}
+.card-checks{display:flex;gap:8px;flex:1}
+.chk{display:flex;align-items:center;gap:4px;cursor:pointer;font-size:10.5px;color:var(--muted);user-select:none}
+.chk input{accent-color:var(--green);width:11px;height:11px;cursor:pointer}
+.chk:has(input:checked){color:var(--green);font-weight:500}
+.chk.chk-ok:has(input:checked){color:var(--amber)}
+.visit-btn{background:var(--accent);border:none;color:#fff;padding:5px 10px;border-radius:6px;font-family:'Syne',sans-serif;font-size:11px;font-weight:600;cursor:pointer;text-decoration:none;transition:background .15s;white-space:nowrap}
+.visit-btn:hover{background:#7d6ef0;text-decoration:none}
+.table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius-lg)}
 table{width:100%;border-collapse:collapse;font-size:12px}
-thead th{
-  background:var(--card);padding:9px 12px;text-align:left;
-  font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
-  color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap;
-  position:sticky;top:60px;z-index:4;cursor:pointer;user-select:none;
-}
+thead th{background:var(--card);padding:9px 12px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none;position:sticky;top:60px;z-index:4}
 thead th:hover{color:var(--text)}
-thead th .sort-arrow{margin-left:4px;opacity:.4}
-thead th.sorted .sort-arrow{opacity:1;color:var(--accent2)}
+thead th.sorted{color:var(--accent2)}
 tbody tr{border-bottom:1px solid var(--border);transition:background .1s}
 tbody tr:hover{background:var(--card)}
 td{padding:9px 12px;vertical-align:middle}
-.td-n{color:var(--muted2);width:30px;font-family:'DM Mono',monospace;font-size:11px}
-
-/* ── Animations ── */
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.fade-in{animation:fadeIn .4s ease}
-
-/* ── Responsive ── */
-@media(max-width:768px){
-  .header{padding:0 16px}
-  .main,.dropzone{padding-left:16px;padding-right:16px}
-  .cards-grid{grid-template-columns:1fr}
-}
+.td-n{color:var(--muted2);width:28px;font-family:'DM Mono',monospace;font-size:10px}
+.empty{text-align:center;padding:60px 20px;color:var(--muted)}
+.empty-icon{font-size:36px;margin-bottom:10px}
+.empty-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+@media(max-width:768px){.header,.main{padding-left:16px;padding-right:16px}.cards-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -307,504 +145,407 @@ td{padding:9px 12px;vertical-align:middle}
 <header class="header">
   <div class="logo">Stage<span>markt</span></div>
   <div class="header-badge">Dashboard</div>
-  <div class="header-stats" id="headerStats" style="display:none">
+  <div class="header-right" id="headerRight" style="display:none">
     <div class="hstat"><div class="hstat-n" id="hTotal">0</div><div class="hstat-l">Vacatures</div></div>
     <div class="hstat"><div class="hstat-n" id="hEmail">0</div><div class="hstat-l">Emails</div></div>
-    <div class="hstat"><div class="hstat-n" id="hTel">0</div><div class="hstat-l">Telefoons</div></div>
     <div class="hstat"><div class="hstat-n" id="hOpl">0</div><div class="hstat-l">Opleidingen</div></div>
+    <button class="refresh-btn" id="refreshBtn" onclick="loadData(true)">
+      <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+      Vernieuwen
+    </button>
   </div>
 </header>
 
-<div class="dropzone" id="dropzone">
-  <div class="drop-area" id="dropArea">
-    <input type="file" class="drop-input" id="fileInput" multiple accept=".json" webkitdirectory>
-    <span class="drop-icon">📂</span>
-    <div class="drop-title">Sleep je JSON bestanden hierheen</div>
-    <div class="drop-sub">Of selecteer de <b>info/</b> map met je gescrapete resultaten</div>
-    <button class="folder-btn" onclick="document.getElementById('fileInput').click();event.stopPropagation()">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-      Selecteer map of bestanden
-    </button>
-  </div>
-</div>
+<div id="appRoot"></div>
 
 <div class="main" id="mainContent">
-
-  <!-- Stats -->
   <div class="stats-row" id="statsRow"></div>
-
-  <!-- Controls -->
   <div class="controlbar">
     <div class="search-wrap">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input class="search-input" type="text" id="searchInput" placeholder="Zoek op bedrijf, email, adres, stad...">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input class="search-input" id="searchInput" type="text" placeholder="Zoek op bedrijf, email, adres, opleiding...">
     </div>
-
     <div class="filter-group">
       <span class="filter-label">Leerweg</span>
-      <button class="filter-chip bol" data-filter="leerweg" data-val="BOL">BOL</button>
-      <button class="filter-chip bbl" data-filter="leerweg" data-val="BBL">BBL</button>
+      <button class="chip-btn bol" data-f="leerweg" data-v="BOL">BOL</button>
+      <button class="chip-btn bbl" data-f="leerweg" data-v="BBL">BBL</button>
     </div>
-
     <div class="filter-group">
       <span class="filter-label">Niveau</span>
-      <button class="filter-chip" data-filter="niveau" data-val="MBO niveau 4">Niv 4</button>
-      <button class="filter-chip" data-filter="niveau" data-val="MBO niveau 3">Niv 3</button>
-      <button class="filter-chip" data-filter="niveau" data-val="MBO niveau 2">Niv 2</button>
-      <button class="filter-chip" data-filter="niveau" data-val="MBO niveau 1">Niv 1</button>
+      <button class="chip-btn" data-f="niveau" data-v="4">Niv 4</button>
+      <button class="chip-btn" data-f="niveau" data-v="3">Niv 3</button>
+      <button class="chip-btn" data-f="niveau" data-v="2">Niv 2</button>
+      <button class="chip-btn" data-f="niveau" data-v="1">Niv 1</button>
     </div>
-
     <div class="filter-group">
-      <span class="filter-label">Vergoeding</span>
-      <button class="filter-chip" data-filter="vergoeding" data-val="met">Met vergoeding</button>
+      <span class="filter-label">Extras</span>
+      <button class="chip-btn grn" data-f="verg" data-v="1">Vergoeding</button>
+      <button class="chip-btn" data-f="contact" data-v="email">Heeft email</button>
+      <button class="chip-btn" data-f="contact" data-v="tel">Heeft tel</button>
     </div>
-
-    <div class="filter-group">
-      <span class="filter-label">Contact</span>
-      <button class="filter-chip" data-filter="contact" data-val="email">Heeft email</button>
-      <button class="filter-chip" data-filter="contact" data-val="tel">Heeft telefoon</button>
-    </div>
-
-    <select class="sort-select" id="sortSelect">
-      <option value="default">Sortering: Standaard</option>
+    <select class="sort-sel" id="sortSel">
+      <option value="">Sortering: Standaard</option>
       <option value="az">Bedrijf A → Z</option>
       <option value="za">Bedrijf Z → A</option>
-      <option value="verg-hoog">Vergoeding: Hoog → Laag</option>
-      <option value="verg-laag">Vergoeding: Laag → Hoog</option>
-      <option value="niveau">Niveau (hoog → laag)</option>
+      <option value="verg-hi">Vergoeding: Hoog → Laag</option>
+      <option value="verg-lo">Vergoeding: Laag → Hoog</option>
+      <option value="niveau-hi">Niveau: Hoog → Laag</option>
       <option value="stad">Stad A → Z</option>
-      <option value="email">Email eerst</option>
+      <option value="email-first">Email eerst</option>
+      <option value="opleiding">Opleiding A → Z</option>
     </select>
-
     <div class="view-toggle">
-      <button class="view-btn active" id="viewCards" title="Kaarten">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      <button class="view-btn active" id="btnCards" title="Kaarten">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
       </button>
-      <button class="view-btn" id="viewTable" title="Tabel">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      <button class="view-btn" id="btnTable" title="Tabel">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
     </div>
   </div>
-
-  <!-- Active filters -->
   <div class="active-filters" id="activeFilters"></div>
-
-  <!-- Results -->
   <div id="resultsArea"></div>
 </div>
 
 <script>
-let allData = [];
-let activeFilters = {};
-let currentSort = 'default';
-let currentView = 'cards';
-let tableSortCol = null;
-let tableSortDir = 1;
-let savedChecks = {};
-try { savedChecks = JSON.parse(localStorage.getItem('sm_dash_checks') || '{}'); } catch(_) {}
+const REPO   = 'HA2614/Stage-info';
+const BRANCH = 'main';
+const FOLDER = 'info';
+const API    = `https://api.github.com/repos/${REPO}/contents/${FOLDER}`;
+const RAW    = `https://raw.githubusercontent.com/${REPO}/${BRANCH}/${FOLDER}/`;
 
-// ── File loading ──────────────────────────────────────────────────────────
-const dropArea = document.getElementById('dropArea');
-const fileInput = document.getElementById('fileInput');
+let allData  = [];
+let filters  = {};
+let sortMode = '';
+let viewMode = 'cards';
+let checks   = {};
+try { checks = JSON.parse(localStorage.getItem('sm_ck') || '{}'); } catch(_) {}
 
-dropArea.addEventListener('dragover', e => { e.preventDefault(); dropArea.classList.add('drag-over'); });
-dropArea.addEventListener('dragleave', () => dropArea.classList.remove('drag-over'));
-dropArea.addEventListener('drop', e => {
-  e.preventDefault();
-  dropArea.classList.remove('drag-over');
-  handleFiles([...e.dataTransfer.files]);
-});
-fileInput.addEventListener('change', () => handleFiles([...fileInput.files]));
+// ── Loading / Error ───────────────────────────────────────────────────────
+function showLoading(title, sub, files) {
+  document.getElementById('appRoot').innerHTML = `
+    <div class="loading">
+      <div class="loading-ring"></div>
+      <div class="loading-title">${title}</div>
+      <div class="loading-sub">${sub || ''}</div>
+      ${files ? `<div class="loading-files">${files}</div>` : ''}
+    </div>`;
+}
 
-async function handleFiles(files) {
-  const jsonFiles = files.filter(f => f.name.endsWith('.json'));
-  if (!jsonFiles.length) { alert('Geen .json bestanden gevonden.'); return; }
+function showError(title, msg, detail) {
+  document.getElementById('appRoot').innerHTML = `
+    <div class="error-state">
+      <div class="error-icon">⚠️</div>
+      <div class="error-title">${title}</div>
+      <div class="error-msg">${msg}</div>
+      ${detail ? `<div class="error-code">${detail}</div>` : ''}
+      <button class="retry-btn" onclick="loadData(true)">Opnieuw proberen</button>
+    </div>`;
+}
 
-  allData = [];
-  for (const f of jsonFiles) {
-    try {
-      const text = await f.text();
-      const parsed = JSON.parse(text);
-      const items = Array.isArray(parsed) ? parsed : [parsed];
-      allData.push(...items);
-    } catch(e) { console.warn('Kon niet parsen:', f.name, e); }
+// ── Fetch data from GitHub ────────────────────────────────────────────────
+async function loadData(force) {
+  const btn = document.getElementById('refreshBtn');
+  if (btn) btn.classList.add('spinning');
+  document.getElementById('mainContent').classList.remove('visible');
+  document.getElementById('headerRight').style.display = 'none';
+
+  showLoading('GitHub ophalen...', `${REPO}/${FOLDER}`);
+
+  try {
+    const bust = force ? `?t=${Date.now()}` : '';
+    const listRes = await fetch(API + bust);
+    if (!listRes.ok) {
+      if (listRes.status === 404) throw new Error(`Map "${FOLDER}" niet gevonden in de repo. Zorg dat de info/ map bestaat.`);
+      throw new Error(`GitHub API antwoordde met: ${listRes.status} ${listRes.statusText}`);
+    }
+    const files = await listRes.json();
+    const jsonFiles = files.filter(f => f.name.endsWith('.json'));
+    if (!jsonFiles.length) throw new Error(`Geen .json bestanden gevonden in ${FOLDER}/`);
+
+    showLoading(`${jsonFiles.length} bestanden laden...`, 'Vacatures ophalen', jsonFiles.map(f => f.name).join('<br>'));
+
+    const settled = await Promise.allSettled(
+      jsonFiles.map(f =>
+        fetch(RAW + f.name + bust)
+          .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+          .then(d => Array.isArray(d) ? d : [d])
+      )
+    );
+
+    allData = [];
+    settled.forEach((r, i) => {
+      if (r.status === 'fulfilled') allData.push(...r.value);
+      else console.warn('Kon niet laden:', jsonFiles[i].name, r.reason);
+    });
+
+    if (!allData.length) throw new Error('Alle bestanden zijn leeg of ongeldig JSON.');
+
+    allData = allData.map((r, i) => ({
+      ...r, _id: i,
+      _vn: parseVerg(r.vergoeding),
+      _nn: parseNiv(r.niveau),
+    }));
+
+    document.getElementById('appRoot').innerHTML = '';
+    document.getElementById('mainContent').classList.add('visible');
+    document.getElementById('headerRight').style.display = 'flex';
+    updateHeader(); renderStats(); render();
+
+  } catch(e) {
+    showError('Kon data niet laden', 'Controleer of de repo publiek is en de info/ map bestaat.', e.message);
   }
 
-  if (!allData.length) { alert('Geen geldige vacatures gevonden in de bestanden.'); return; }
-
-  // Normalize
-  allData = allData.map((r, i) => ({
-    ...r,
-    _id: i,
-    _verg_num: parseVergoeding(r.vergoeding),
-    _niveau_num: parseNiveau(r.niveau),
-  }));
-
-  document.getElementById('dropzone').style.display = 'none';
-  document.getElementById('mainContent').classList.add('visible');
-  document.getElementById('headerStats').style.display = 'flex';
-  updateHeaderStats();
-  renderStats();
-  render();
+  if (btn) btn.classList.remove('spinning');
 }
 
-// ── Parsers ───────────────────────────────────────────────────────────────
-function parseVergoeding(v) {
+// ── Helpers ───────────────────────────────────────────────────────────────
+function parseVerg(v) {
   if (!v || v === '—') return -1;
-  const nums = v.match(/\d[\d.,]*/g);
-  if (!nums) return -1;
-  const values = nums.map(n => parseFloat(n.replace(',','.')));
-  return values.reduce((a,b) => a+b, 0) / values.length;
+  const n = (v.match(/\d[\d.,]*/g)||[]).map(s=>parseFloat(s.replace(',','.')));
+  return n.length ? n.reduce((a,b)=>a+b,0)/n.length : -1;
 }
-
-function parseNiveau(n) {
+function parseNiv(n) {
   if (!n) return 0;
-  if (n.includes('4') || n.toLowerCase().includes('hbo')) return 4;
-  if (n.includes('3')) return 3;
-  if (n.includes('2')) return 2;
-  if (n.includes('1')) return 1;
+  const s = n.toString().toLowerCase();
+  if (s.includes('hbo')) return 5;
+  if (s.includes('4')) return 4;
+  if (s.includes('3')) return 3;
+  if (s.includes('2')) return 2;
+  if (s.includes('1')) return 1;
   return 0;
 }
-
-function getLevelClass(n) {
-  if (!n) return '';
-  if (n.includes('4')) return 'level-4';
-  if (n.toLowerCase().includes('hbo')) return 'level-hbo';
-  if (n.includes('3')) return 'level-3';
-  if (n.includes('2')) return 'level-2';
-  if (n.includes('1')) return 'level-1';
-  return '';
+function shortNiv(n) { return (n||'—').replace('MBO niveau ','Niv '); }
+function levelCls(n) {
+  if (!n||n==='—') return 'l0';
+  const s = n.toLowerCase();
+  if (s.includes('hbo')) return 'l5';
+  if (s.includes('4')) return 'l4';
+  if (s.includes('3')) return 'l3';
+  if (s.includes('2')) return 'l2';
+  if (s.includes('1')) return 'l1';
+  return 'l0';
+}
+function avatarGrad(name) {
+  const g=['135deg,#6c5ce7,#a29bfe','135deg,#00d68f,#00b4d8','135deg,#fd79a8,#e17055','135deg,#fdcb6e,#e17055','135deg,#74b9ff,#0984e3','135deg,#55efc4,#00b894'];
+  return g[(name||'A').charCodeAt(0)%g.length];
 }
 
-// ── Stats ─────────────────────────────────────────────────────────────────
-function updateHeaderStats() {
-  document.getElementById('hTotal').textContent = allData.length;
-  document.getElementById('hEmail').textContent = allData.filter(r => r.email && r.email !== '—').length;
-  document.getElementById('hTel').textContent = allData.filter(r => r.telefoon && r.telefoon !== '—').length;
-  const opls = new Set(allData.map(r => r.opleiding).filter(o => o && o !== '—'));
+// ── Header stats ──────────────────────────────────────────────────────────
+function updateHeader() {
+  document.getElementById('hTotal').textContent  = allData.length;
+  document.getElementById('hEmail').textContent  = allData.filter(r=>r.email&&r.email!=='—').length;
+  const opls = new Set(allData.map(r=>r.opleiding).filter(o=>o&&o!=='—'));
   document.getElementById('hOpl').textContent = opls.size;
 }
 
+// ── Stats cards ───────────────────────────────────────────────────────────
 function renderStats() {
-  const data = allData;
-  const byNiveau = {};
-  data.forEach(r => {
-    const n = r.niveau || 'Onbekend';
-    byNiveau[n] = (byNiveau[n]||0)+1;
-  });
-  const bolCount = data.filter(r => r.leerweg && r.leerweg.toUpperCase().includes('BOL')).length;
-  const bblCount = data.filter(r => r.leerweg && r.leerweg.toUpperCase().includes('BBL')).length;
-  const vergCount = data.filter(r => r._verg_num > 0).length;
-  const gemVerg = vergCount > 0 ? Math.round(data.filter(r=>r._verg_num>0).reduce((a,r)=>a+r._verg_num,0)/vergCount) : 0;
-
-  const html = [
-    `<div class="stat-card"><div class="stat-n a">${data.length}</div><div class="stat-l">Totaal vacatures</div></div>`,
-    `<div class="stat-card"><div class="stat-n g">${data.filter(r=>r.email&&r.email!=='—').length}</div><div class="stat-l">Met email</div></div>`,
-    `<div class="stat-card"><div class="stat-n g">${data.filter(r=>r.telefoon&&r.telefoon!=='—').length}</div><div class="stat-l">Met telefoon</div></div>`,
-    `<div class="stat-card"><div class="stat-n y">${vergCount}</div><div class="stat-l">Met vergoeding</div></div>`,
-    gemVerg > 0 ? `<div class="stat-card"><div class="stat-n y">€${gemVerg}</div><div class="stat-l">Gem. vergoeding</div></div>` : '',
-    bolCount > 0 ? `<div class="stat-card"><div class="stat-n" style="color:var(--blue)">${bolCount}</div><div class="stat-l">BOL</div></div>` : '',
-    bblCount > 0 ? `<div class="stat-card"><div class="stat-n" style="color:var(--amber)">${bblCount}</div><div class="stat-l">BBL</div></div>` : '',
-    ...Object.entries(byNiveau).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([n,c]) =>
-      `<div class="stat-card"><div class="stat-n a">${c}</div><div class="stat-l">${n}</div></div>`
+  const d = allData;
+  const wv = d.filter(r=>r._vn>0);
+  const gem = wv.length ? Math.round(wv.reduce((a,r)=>a+r._vn,0)/wv.length) : 0;
+  const bol = d.filter(r=>(r.leerweg||'').toUpperCase().includes('BOL')).length;
+  const bbl = d.filter(r=>(r.leerweg||'').toUpperCase().includes('BBL')).length;
+  const byN = {};
+  d.forEach(r=>{ const n=r.niveau||'Onbekend'; byN[n]=(byN[n]||0)+1; });
+  document.getElementById('statsRow').innerHTML = [
+    `<div class="stat-card"><div class="stat-n a">${d.length}</div><div class="stat-l">Totaal</div></div>`,
+    `<div class="stat-card"><div class="stat-n g">${d.filter(r=>r.email&&r.email!=='—').length}</div><div class="stat-l">Met email</div></div>`,
+    `<div class="stat-card"><div class="stat-n g">${d.filter(r=>r.telefoon&&r.telefoon!=='—').length}</div><div class="stat-l">Met telefoon</div></div>`,
+    `<div class="stat-card"><div class="stat-n y">${wv.length}</div><div class="stat-l">Vergoeding</div></div>`,
+    gem>0?`<div class="stat-card"><div class="stat-n y">€${gem}</div><div class="stat-l">Gem. vergoed.</div></div>`:'',
+    bol>0?`<div class="stat-card"><div class="stat-n b">${bol}</div><div class="stat-l">BOL</div></div>`:'',
+    bbl>0?`<div class="stat-card"><div class="stat-n y">${bbl}</div><div class="stat-l">BBL</div></div>`:'',
+    ...Object.entries(byN).sort((a,b)=>b[1]-a[1]).map(([n,c])=>
+      `<div class="stat-card"><div class="stat-n a">${c}</div><div class="stat-l">${shortNiv(n)}</div></div>`
     ),
   ].join('');
-  document.getElementById('statsRow').innerHTML = html;
 }
 
-// ── Filter & Sort ─────────────────────────────────────────────────────────
+// ── Filter + Sort ─────────────────────────────────────────────────────────
 function getFiltered() {
-  const q = document.getElementById('searchInput').value.toLowerCase().trim();
-  let data = allData.filter(r => {
+  const q = (document.getElementById('searchInput').value||'').toLowerCase().trim();
+  let d = allData.filter(r => {
     if (q) {
-      const hay = [r.bedrijfsnaam, r.stageTitle, r.adres, r.email, r.telefoon, r.stad, r.opleiding].join(' ').toLowerCase();
-      if (!hay.includes(q)) return false;
+      const h = [r.bedrijfsnaam,r.stageTitle,r.adres,r.email,r.stad,r.opleiding,r.telefoon].join(' ').toLowerCase();
+      if (!h.includes(q)) return false;
     }
-    // Leerweg
-    if (activeFilters.leerweg) {
-      const lw = (r.leerweg || '').toUpperCase();
-      if (!lw.includes(activeFilters.leerweg)) return false;
-    }
-    // Niveau
-    if (activeFilters.niveau) {
-      if ((r.niveau || '') !== activeFilters.niveau) return false;
-    }
-    // Vergoeding
-    if (activeFilters.vergoeding === 'met') {
-      if (r._verg_num <= 0) return false;
-    }
-    // Contact
-    if (activeFilters.contact === 'email') {
-      if (!r.email || r.email === '—') return false;
-    }
-    if (activeFilters.contact === 'tel') {
-      if (!r.telefoon || r.telefoon === '—') return false;
-    }
+    if (filters.leerweg && !(r.leerweg||'').toUpperCase().includes(filters.leerweg)) return false;
+    if (filters.niveau  && r._nn !== parseInt(filters.niveau)) return false;
+    if (filters.verg === '1' && r._vn <= 0) return false;
+    if (filters.contact === 'email' && (!r.email||r.email==='—')) return false;
+    if (filters.contact === 'tel'   && (!r.telefoon||r.telefoon==='—')) return false;
     return true;
   });
-
-  // Sort
-  const s = currentSort;
-  if (s === 'az') data.sort((a,b) => (a.bedrijfsnaam||'').localeCompare(b.bedrijfsnaam||''));
-  else if (s === 'za') data.sort((a,b) => (b.bedrijfsnaam||'').localeCompare(a.bedrijfsnaam||''));
-  else if (s === 'verg-hoog') data.sort((a,b) => b._verg_num - a._verg_num);
-  else if (s === 'verg-laag') data.sort((a,b) => {
-    if (a._verg_num < 0 && b._verg_num < 0) return 0;
-    if (a._verg_num < 0) return 1;
-    if (b._verg_num < 0) return -1;
-    return a._verg_num - b._verg_num;
-  });
-  else if (s === 'niveau') data.sort((a,b) => b._niveau_num - a._niveau_num);
-  else if (s === 'stad') data.sort((a,b) => (a.stad||'').localeCompare(b.stad||''));
-  else if (s === 'email') data.sort((a,b) => {
-    const ae = a.email && a.email !== '—' ? 0 : 1;
-    const be = b.email && b.email !== '—' ? 0 : 1;
-    return ae - be;
-  });
-
-  return data;
+  if (sortMode==='az')         d.sort((a,b)=>(a.bedrijfsnaam||'').localeCompare(b.bedrijfsnaam||''));
+  else if (sortMode==='za')    d.sort((a,b)=>(b.bedrijfsnaam||'').localeCompare(a.bedrijfsnaam||''));
+  else if (sortMode==='verg-hi') d.sort((a,b)=>b._vn-a._vn);
+  else if (sortMode==='verg-lo') d.sort((a,b)=>{ if(a._vn<0&&b._vn<0)return 0; if(a._vn<0)return 1; if(b._vn<0)return-1; return a._vn-b._vn; });
+  else if (sortMode==='niveau-hi') d.sort((a,b)=>b._nn-a._nn);
+  else if (sortMode==='stad')      d.sort((a,b)=>(a.stad||'').localeCompare(b.stad||''));
+  else if (sortMode==='email-first') d.sort((a,b)=>(a.email&&a.email!=='—'?0:1)-(b.email&&b.email!=='—'?0:1));
+  else if (sortMode==='opleiding')   d.sort((a,b)=>(a.opleiding||'').localeCompare(b.opleiding||''));
+  return d;
 }
 
-// ── Render ─────────────────────────────────────────────────────────────────
+// ── Render ────────────────────────────────────────────────────────────────
 function render() {
-  renderActiveFilters();
-  const data = getFiltered();
+  renderTags();
+  const d = getFiltered();
+  viewMode==='table' ? renderTable(d) : renderCards(d);
+}
 
-  if (currentView === 'table') {
-    renderTable(data);
-    return;
-  }
-
-  // Group by opleiding + niveau
+function renderCards(d) {
+  if (!d.length) { document.getElementById('resultsArea').innerHTML = emptyHtml(); return; }
   const groups = {};
-  data.forEach(r => {
-    const opl = r.opleiding && r.opleiding !== '—' ? r.opleiding : 'Overige';
-    const niv = r.niveau && r.niveau !== '—' ? r.niveau : 'Onbekend niveau';
-    const key = `${niv}___${opl}`;
-    if (!groups[key]) groups[key] = { opleiding: opl, niveau: niv, items: [] };
+  d.forEach(r => {
+    const opl = r.opleiding&&r.opleiding!=='—' ? r.opleiding : 'Overige';
+    const niv = r.niveau&&r.niveau!=='—' ? r.niveau : 'Onbekend niveau';
+    const key = `${String(r._nn).padStart(2,'0')}__${niv}__${opl}`;
+    if (!groups[key]) groups[key] = {opl, niv, nn:r._nn, items:[]};
     groups[key].items.push(r);
   });
-
-  // Sort groups: niveau desc, then opleiding asc
-  const sortedGroups = Object.values(groups).sort((a,b) => {
-    const nd = parseNiveau(b.niveau) - parseNiveau(a.niveau);
-    if (nd !== 0) return nd;
-    return a.opleiding.localeCompare(b.opleiding);
-  });
-
-  if (sortedGroups.length === 0) {
-    document.getElementById('resultsArea').innerHTML = `
-      <div class="empty">
-        <div class="empty-icon">🔍</div>
-        <div class="empty-title">Geen resultaten</div>
-        <p>Probeer andere filters of zoektermen.</p>
-      </div>`;
-    return;
-  }
-
-  const html = sortedGroups.map(g => {
-    const lvlClass = getLevelClass(g.niveau);
-    const cards = g.items.map(r => renderCard(r)).join('');
-    const gid = 'g_' + Math.random().toString(36).slice(2);
-    return `
-      <div class="section">
-        <div class="section-header">
-          <div class="section-title">${g.opleiding}</div>
-          <span class="section-level ${lvlClass}">${g.niveau}</span>
-          <span class="section-badge">${g.items.length} vacatures</span>
-          <button class="section-toggle" onclick="toggleSection('${gid}')">Inklappen</button>
-        </div>
-        <div class="cards-grid" id="${gid}">${cards}</div>
-      </div>`;
+  const sorted = Object.values(groups).sort((a,b)=>b.nn-a.nn||a.opl.localeCompare(b.opl));
+  document.getElementById('resultsArea').innerHTML = sorted.map(g => {
+    const gid = 'sg'+Math.random().toString(36).slice(2,8);
+    return `<div class="section">
+      <div class="section-header">
+        <div class="section-title">${g.opl}</div>
+        <span class="level-pill ${levelCls(g.niv)}">${shortNiv(g.niv)}</span>
+        <span class="section-badge">${g.items.length}</span>
+        <button class="sec-toggle" onclick="toggleSec('${gid}',this)">Inklappen</button>
+      </div>
+      <div class="cards-grid" id="${gid}">${g.items.map(r=>cardHtml(r)).join('')}</div>
+    </div>`;
   }).join('');
-
-  document.getElementById('resultsArea').innerHTML = html;
-  loadCheckboxStates();
-  bindCheckboxes();
+  bindChecks();
 }
 
-function toggleSection(id) {
-  const el = document.getElementById(id);
-  const btn = el?.previousElementSibling?.querySelector('.section-toggle');
-  if (!el) return;
-  const hidden = el.style.display === 'none';
-  el.style.display = hidden ? 'grid' : 'none';
-  if (btn) btn.textContent = hidden ? 'Inklappen' : 'Uitklappen';
-}
-
-function renderCard(r) {
-  const initial = (r.bedrijfsnaam || '?')[0].toUpperCase();
-  const colors = ['135deg,#6c5ce7,#a29bfe','135deg,#00d68f,#00b4d8','135deg,#fd79a8,#e17055','135deg,#fdcb6e,#e17055','135deg,#74b9ff,#0984e3'];
-  const ci = r.bedrijfsnaam ? r.bedrijfsnaam.charCodeAt(0) % colors.length : 0;
-
-  const email = r.email && r.email !== '—'
-    ? `<a href="mailto:${r.email}">${r.email}</a>`
-    : '<span class="nil">—</span>';
-  const tel = r.telefoon && r.telefoon !== '—'
-    ? `<a href="tel:${r.telefoon}">${r.telefoon}</a>`
-    : '<span class="nil">—</span>';
-
-  const leerwegChip = r.leerweg
-    ? `<span class="chip ${r.leerweg.toUpperCase().includes('BOL') ? 'chip-bol' : 'chip-bbl'}">${r.leerweg}</span>`
-    : '';
-  const vergChip = r._verg_num > 0
-    ? `<span class="chip chip-verg">€ ${r.vergoeding}</span>`
-    : `<span class="chip chip-nil">Geen verg.</span>`;
-  const levelChip = r.niveau && r.niveau !== '—'
-    ? `<span class="chip chip-level">${r.niveau}</span>`
-    : '';
-
-  const id = r._id;
-  const gb = savedChecks[`g_${id}`] ? 'checked' : '';
-  const re = savedChecks[`r_${id}`] ? 'checked' : '';
-  const aa = savedChecks[`a_${id}`] ? 'checked' : '';
-
+function cardHtml(r) {
+  const id   = r._id;
+  const init = (r.bedrijfsnaam||'?')[0].toUpperCase();
+  const email = r.email&&r.email!=='—' ? `<a href="mailto:${r.email}">${r.email}</a>` : '<span class="rv-nil">—</span>';
+  const tel   = r.telefoon&&r.telefoon!=='—' ? `<a href="tel:${r.telefoon}">${r.telefoon}</a>` : '<span class="rv-nil">—</span>';
+  const lwChip = r.leerweg ? `<span class="chip ${r.leerweg.toUpperCase().includes('BOL')?'cbol':'cbbl'}">${r.leerweg}</span>` : '';
+  const vChip  = r._vn>0 ? `<span class="chip cv">€ ${r.vergoeding}</span>` : `<span class="chip cnil">Geen verg.</span>`;
+  const nChip  = r.niveau&&r.niveau!=='—' ? `<span class="chip clvl">${shortNiv(r.niveau)}</span>` : '';
+  const gb=checks[`g${id}`]?'checked':'', rb=checks[`r${id}`]?'checked':'', ab=checks[`a${id}`]?'checked':'';
   return `<div class="card">
     <div class="card-top">
-      <div class="card-avatar" style="background:linear-gradient(${colors[ci]})">${initial}</div>
+      <div class="card-av" style="background:linear-gradient(${avatarGrad(r.bedrijfsnaam)})">${init}</div>
       <div class="card-head">
-        <div class="card-company">${r.bedrijfsnaam || '—'}</div>
-        <div class="card-title">${r.stageTitle && r.stageTitle !== '—' ? r.stageTitle : '—'}</div>
+        <div class="card-co">${r.bedrijfsnaam||'—'}</div>
+        <div class="card-sub">${r.stageTitle&&r.stageTitle!=='—'?r.stageTitle:(r.opleiding||'—')}</div>
       </div>
     </div>
-    <div class="card-chips">${leerwegChip}${levelChip}${vergChip}</div>
+    <div class="card-chips">${lwChip}${nChip}${vChip}</div>
     <div class="card-meta">
-      <div class="card-row"><span class="card-row-label">Adres</span><span class="card-row-val ${r.adres==='—'?'nil':''}">${r.adres||'—'}</span></div>
-      <div class="card-row"><span class="card-row-label">Email</span><span class="card-row-val">${email}</span></div>
-      <div class="card-row"><span class="card-row-label">Tel</span><span class="card-row-val">${tel}</span></div>
-      <div class="card-row"><span class="card-row-label">Stad</span><span class="card-row-val ${!r.stad||r.stad==='—'?'nil':''}">${r.stad||'—'}</span></div>
+      <div class="crow"><span class="rl">Adres</span><span class="rv ${!r.adres||r.adres==='—'?'rv-nil':''}">${r.adres||'—'}</span></div>
+      <div class="crow"><span class="rl">Email</span><span class="rv">${email}</span></div>
+      <div class="crow"><span class="rl">Tel</span><span class="rv">${tel}</span></div>
+      <div class="crow"><span class="rl">Stad</span><span class="rv ${!r.stad||r.stad==='—'?'rv-nil':''}">${r.stad||'—'}</span></div>
     </div>
     <div class="card-footer">
-      <div class="card-status">
-        <label class="chk-label"><input type="checkbox" data-ck="g_${id}" ${gb}><span>Gebeld</span></label>
-        <label class="chk-label"><input type="checkbox" data-ck="r_${id}" ${re}><span>Reactie</span></label>
-        <label class="chk-label chk-aangenomen"><input type="checkbox" data-ck="a_${id}" ${aa}><span>Aangenomen</span></label>
+      <div class="card-checks">
+        <label class="chk"><input type="checkbox" data-ck="g${id}" ${gb}><span>Gebeld</span></label>
+        <label class="chk"><input type="checkbox" data-ck="r${id}" ${rb}><span>Reactie</span></label>
+        <label class="chk chk-ok"><input type="checkbox" data-ck="a${id}" ${ab}><span>Aangenomen</span></label>
       </div>
-      <div class="card-actions">
-        ${r.url ? `<a class="btn-card primary" href="${r.url}" target="_blank">Bekijk</a>` : ''}
-      </div>
+      ${r.url?`<a class="visit-btn" href="${r.url}" target="_blank">Bekijk ↗</a>`:''}
     </div>
   </div>`;
 }
 
-function renderTable(data) {
-  if (!data.length) {
-    document.getElementById('resultsArea').innerHTML = `<div class="empty"><div class="empty-icon">🔍</div><div class="empty-title">Geen resultaten</div></div>`;
-    return;
-  }
-  const cols = [
-    {key:'_n', label:'#', sortKey:null},
-    {key:'bedrijfsnaam', label:'Bedrijf', sortKey:'az'},
-    {key:'opleiding', label:'Opleiding', sortKey:'opleiding'},
-    {key:'niveau', label:'Niveau', sortKey:'niveau'},
-    {key:'leerweg', label:'Leerweg', sortKey:'leerweg'},
-    {key:'stad', label:'Stad', sortKey:'stad'},
-    {key:'email', label:'Email', sortKey:'email'},
-    {key:'telefoon', label:'Tel'},
-    {key:'vergoeding', label:'Vergoeding', sortKey:'verg-hoog'},
-    {key:'_link', label:'Link'},
-  ];
-  const ths = cols.map(c => {
-    const arrow = c.sortKey ? `<span class="sort-arrow">↕</span>` : '';
-    const sorted = currentSort === c.sortKey ? 'sorted' : '';
-    const click = c.sortKey ? `onclick="document.getElementById('sortSelect').value='${c.sortKey}';currentSort='${c.sortKey}';render()"` : '';
-    return `<th class="${sorted}" ${click}>${c.label}${arrow}</th>`;
-  }).join('');
-
-  const rows = data.map((r, i) => {
-    const email = r.email && r.email !== '—' ? `<a href="mailto:${r.email}">${r.email}</a>` : '<span class="nil">—</span>';
-    const tel = r.telefoon && r.telefoon !== '—' ? `<a href="tel:${r.telefoon}">${r.telefoon}</a>` : '—';
-    const verg = r._verg_num > 0 ? `<span class="chip chip-verg">€ ${r.vergoeding}</span>` : '<span class="nil">—</span>';
-    const lw = r.leerweg ? `<span class="chip ${r.leerweg.toUpperCase().includes('BOL')?'chip-bol':'chip-bbl'}">${r.leerweg}</span>` : '—';
-    const link = r.url ? `<a class="btn-card" href="${r.url}" target="_blank">↗</a>` : '';
+function renderTable(d) {
+  if (!d.length) { document.getElementById('resultsArea').innerHTML = emptyHtml(); return; }
+  const sc = k => sortMode===k?'sorted':'';
+  const so = k => `onclick="document.getElementById('sortSel').value='${k}';sortMode='${k}';render()"`;
+  const rows = d.map((r,i) => {
+    const email = r.email&&r.email!=='—'?`<a href="mailto:${r.email}" style="color:var(--accent2)">${r.email}</a>`:'<span style="color:var(--muted2)">—</span>';
+    const lw = r.leerweg?`<span class="chip ${r.leerweg.toUpperCase().includes('BOL')?'cbol':'cbbl'}">${r.leerweg}</span>`:'—';
+    const vg = r._vn>0?`<span class="chip cv">€ ${r.vergoeding}</span>`:'<span style="color:var(--muted2)">—</span>';
+    const lk = r.url?`<a class="visit-btn" href="${r.url}" target="_blank" style="font-size:10px;padding:3px 8px">↗</a>`:'';
     return `<tr>
       <td class="td-n">${i+1}</td>
-      <td><strong style="font-size:12px">${r.bedrijfsnaam||'—'}</strong></td>
-      <td style="font-size:11px;color:var(--muted)">${r.opleiding||'—'}</td>
-      <td><span class="chip chip-level ${getLevelClass(r.niveau)}" style="font-size:10px">${r.niveau||'—'}</span></td>
+      <td><strong style="font-size:12px;font-weight:600">${r.bedrijfsnaam||'—'}</strong></td>
+      <td style="font-size:11px;color:var(--muted);max-width:130px">${r.opleiding||'—'}</td>
+      <td><span class="chip clvl ${levelCls(r.niveau)}" style="font-size:10px">${shortNiv(r.niveau||'—')}</span></td>
       <td>${lw}</td>
-      <td style="color:var(--muted);font-size:11px">${r.stad||'—'}</td>
+      <td style="font-size:11px;color:var(--muted)">${r.stad||'—'}</td>
       <td style="font-size:11px">${email}</td>
-      <td style="font-size:11px">${tel}</td>
-      <td>${verg}</td>
-      <td>${link}</td>
+      <td style="font-size:11px;color:var(--muted)">${r.telefoon&&r.telefoon!=='—'?r.telefoon:'—'}</td>
+      <td>${vg}</td>
+      <td>${lk}</td>
     </tr>`;
   }).join('');
-
   document.getElementById('resultsArea').innerHTML = `
-    <div class="table-wrap">
-      <table><thead><tr>${ths}</tr></thead><tbody>${rows}</tbody></table>
-    </div>`;
+    <div class="table-wrap"><table>
+      <thead><tr>
+        <th class="td-n">#</th>
+        <th class="${sc('az')}" ${so('az')}>Bedrijf ↕</th>
+        <th class="${sc('opleiding')}" ${so('opleiding')}>Opleiding ↕</th>
+        <th class="${sc('niveau-hi')}" ${so('niveau-hi')}>Niveau ↕</th>
+        <th>Leerweg</th>
+        <th class="${sc('stad')}" ${so('stad')}>Stad ↕</th>
+        <th class="${sc('email-first')}" ${so('email-first')}>Email ↕</th>
+        <th>Telefoon</th>
+        <th class="${sc('verg-hi')}" ${so('verg-hi')}>Vergoeding ↕</th>
+        <th>Link</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table></div>`;
 }
 
-// ── Active filters render ──────────────────────────────────────────────────
-function renderActiveFilters() {
-  const af = document.getElementById('activeFilters');
-  const tags = Object.entries(activeFilters).map(([k, v]) => `
-    <span class="af-tag">${k}: <b>${v}</b>
-      <button onclick="removeFilter('${k}')">×</button>
-    </span>`).join('');
-  af.innerHTML = tags;
+function emptyHtml() {
+  return `<div class="empty"><div class="empty-icon">🔍</div><div class="empty-title">Geen resultaten</div><p>Probeer andere filters of zoektermen.</p></div>`;
 }
 
-function removeFilter(key) {
-  delete activeFilters[key];
-  document.querySelectorAll(`[data-filter="${key}"]`).forEach(b => b.classList.remove('active'));
+function toggleSec(id, btn) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const h = el.style.display === 'none';
+  el.style.display = h ? 'grid' : 'none';
+  btn.textContent = h ? 'Inklappen' : 'Uitklappen';
+}
+
+// ── Active filter tags ────────────────────────────────────────────────────
+function renderTags() {
+  const lbl = {leerweg:'Leerweg',niveau:'Niveau',verg:'Vergoeding',contact:'Contact'};
+  document.getElementById('activeFilters').innerHTML = Object.entries(filters).map(([k,v]) =>
+    `<span class="af-tag">${lbl[k]||k}: <b>${v}</b><button onclick="rmFilter('${k}')">×</button></span>`
+  ).join('');
+}
+function rmFilter(k) {
+  delete filters[k];
+  document.querySelectorAll(`[data-f="${k}"]`).forEach(b=>b.classList.remove('active'));
   render();
 }
 
-// ── Checkboxes ─────────────────────────────────────────────────────────────
-function loadCheckboxStates() {
-  document.querySelectorAll('input[data-ck]').forEach(cb => {
-    if (savedChecks[cb.dataset.ck]) cb.checked = true;
-  });
-}
-function bindCheckboxes() {
+// ── Checkboxes ────────────────────────────────────────────────────────────
+function bindChecks() {
   document.querySelectorAll('input[data-ck]').forEach(cb => {
     cb.addEventListener('change', () => {
-      savedChecks[cb.dataset.ck] = cb.checked;
-      localStorage.setItem('sm_dash_checks', JSON.stringify(savedChecks));
+      checks[cb.dataset.ck] = cb.checked;
+      localStorage.setItem('sm_ck', JSON.stringify(checks));
     });
   });
 }
 
-// ── Event listeners ────────────────────────────────────────────────────────
-document.getElementById('searchInput').addEventListener('input', () => render());
-
-document.getElementById('sortSelect').addEventListener('change', function() {
-  currentSort = this.value;
-  render();
-});
-
-document.querySelectorAll('.filter-chip').forEach(btn => {
+// ── Events ────────────────────────────────────────────────────────────────
+document.getElementById('searchInput').addEventListener('input', render);
+document.getElementById('sortSel').addEventListener('change', function(){ sortMode=this.value; render(); });
+document.querySelectorAll('.chip-btn').forEach(btn => {
   btn.addEventListener('click', () => {
-    const filter = btn.dataset.filter;
-    const val = btn.dataset.val;
-    if (activeFilters[filter] === val) {
-      delete activeFilters[filter];
-      btn.classList.remove('active');
-    } else {
-      // Remove other active buttons in same group
-      document.querySelectorAll(`[data-filter="${filter}"]`).forEach(b => b.classList.remove('active'));
-      activeFilters[filter] = val;
-      btn.classList.add('active');
-    }
+    const f=btn.dataset.f, v=btn.dataset.v;
+    if (filters[f]===v) { delete filters[f]; btn.classList.remove('active'); }
+    else { document.querySelectorAll(`[data-f="${f}"]`).forEach(b=>b.classList.remove('active')); filters[f]=v; btn.classList.add('active'); }
     render();
   });
 });
+document.getElementById('btnCards').addEventListener('click',()=>{ viewMode='cards'; document.getElementById('btnCards').classList.add('active'); document.getElementById('btnTable').classList.remove('active'); render(); });
+document.getElementById('btnTable').addEventListener('click',()=>{ viewMode='table'; document.getElementById('btnTable').classList.add('active'); document.getElementById('btnCards').classList.remove('active'); render(); });
 
-document.getElementById('viewCards').addEventListener('click', () => {
-  currentView = 'cards';
-  document.getElementById('viewCards').classList.add('active');
-  document.getElementById('viewTable').classList.remove('active');
-  render();
-});
-document.getElementById('viewTable').addEventListener('click', () => {
-  currentView = 'table';
-  document.getElementById('viewTable').classList.add('active');
-  document.getElementById('viewCards').classList.remove('active');
-  render();
-});
+loadData();
 </script>
 </body>
 </html>
